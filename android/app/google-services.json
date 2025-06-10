@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "319552113597",
+    "project_id": "mockuniqlo",
+    "storage_bucket": "mockuniqlo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319552113597:android:294de828052d6303cda0d4",
+        "android_client_info": {
+          "package_name": "com.example.e_comm_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTOFDQEtt1Z5W1Pzd18UmBsVyj-Bag4GY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
