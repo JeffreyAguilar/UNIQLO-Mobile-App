@@ -1,25 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_comm_app/models/products.dart';
+import 'package:e_comm_app/screens/product_details_screen.dart';
 import 'package:e_comm_app/widgets/cart_button.dart';
-import 'package:e_comm_app/widgets/product_card.dart';
 import 'package:flutter/material.dart';
 
 class ShirtsCatalogue extends StatelessWidget {
-  ShirtsCatalogue({super.key});
-
-  final List<Product> products = [
-    Product(
-        name: 'Green shirt',
-        price: 29.99,
-        description: 'Its a shirt',
-        imageUrl:
-            'https://image.uniqlo.com/UQ/ST3/WesternCommon/imagesgoods/466895/item/goods_55_466895_3x4.jpg?width=300'),
-    Product(
-        name: 'Pink shirt',
-        price: 19.99,
-        description: 'Its a shirt',
-        imageUrl:
-            'https://image.uniqlo.com/UQ/ST3/WesternCommon/imagesgoods/455365/item/goods_12_455365_3x4.jpg?width=300'),
-  ];
+  const ShirtsCatalogue({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +30,45 @@ class ShirtsCatalogue extends StatelessWidget {
           }),
         ],
       ),
-      body: ListView.builder(
-        itemCount: products.length,
-        itemBuilder: (context, index) {
-          return ProductCard(product: products[index]);
-        },
-      ),
+      body: StreamBuilder<QuerySnapshot>(stream: FirebaseFirestore.instance.collection('products').snapshots(), builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return const Center(child: Text('No products available'));
+        }
+
+        final products = snapshot.data!.docs.map((doc) => Product.fromFirestore(doc.data() as Map<String, dynamic>)).toList();
+
+        return ListView.builder(
+            itemCount: products.length,
+            itemBuilder: (context, index) {
+              final product = products[index];
+              return ListTile(
+                leading: Image.network(product.imageUrl, width: 50, height: 50, fit: BoxFit.cover),
+                title: Text(product.name),
+                subtitle: Text('\$${product.price.toStringAsFixed(2)}'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProductDetailsScreen(
+                        name: product.name,
+                        price: product.price,
+                        description: product.description,
+                        imageUrl: product.imageUrl,
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          );})
     );
   }
 }
