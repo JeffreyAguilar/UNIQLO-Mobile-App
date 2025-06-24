@@ -16,14 +16,12 @@ class AuthService {
     }
   }
 
-  Future createAccount({required String email, required String confirmEmail, required String password}) async {
+  Future<UserCredential?> createAccount({required String email, required String confirmEmail, required String password}) async {
     if(email != confirmEmail){
       return null;
   } else{
     try{
-      UserCredential result = await firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
-      User? user = result.user;
-      return user;
+      return await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
     }
     catch(error){
       print(error);
@@ -64,4 +62,7 @@ class AuthService {
     }
   }
 
+  Future<User?> getCurrentUser() async {
+    return FirebaseAuth.instance.currentUser;
+  }
 }

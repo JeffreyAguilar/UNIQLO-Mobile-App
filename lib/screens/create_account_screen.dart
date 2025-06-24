@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:e_comm_app/services/authentication_service.dart';
+import 'package:e_comm_app/models/user.dart' as AppUser;
 
 class CreateAccountScreen extends StatefulWidget {
    const CreateAccountScreen({super.key});
@@ -38,24 +41,54 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       setState(() => errorMessage = 'One or more fields are empty. Please try again.');
       return;
     }
-    if(confirmEmails(email, confirmEmail) == false){
+    if(!confirmEmails(email, confirmEmail)){
       setState(() {
         errorMessage = 'Emails do not match. Please try again.';
       }); 
       return;
     }
-    confirmEmails(email, confirmEmail);
-    dynamic result = await firebaseAuth.createAccount(email: email, confirmEmail: confirmEmail, password: password);
-    if(result == null){
-      setState(() => errorMessage ='Could not sign up with those credentials. Please try again.');
-    } else {
-      if(mounted){
+
+    try {
+      // Create account using Firebase Authentication
+      UserCredential? result = await firebaseAuth.createAccount(email: email, confirmEmail: confirmEmail, password: password);
+
+      // Ensure result contains the Firebase User object
+      if (result?.user == null) {
+        setState(() => errorMessage = 'Could not sign up with those credentials. Please try again.');
+      } else {
+        String? userId = result?.user?.uid; // Use Firebase User's uid if not null
+
+        // Create a User object using the user model
+        AppUser.User newUser = AppUser.User(
+          userId: userId ?? '',
+          name: '', // Placeholder for name, can be updated later
+          email: email,
+          phone: 0, // Placeholder for phone, can be updated later
+          address: {}, // Placeholder for address, can be updated later
+          orderHistory: [],
+          wishList: [],
+        );
+
+        // Save the User object to Firestore
+        await FirebaseFirestore.instance.collection('users').doc(userId).set({
+          'name': newUser.name,
+          'email': newUser.email,
+          'phone': newUser.phone,
+          'address': newUser.address,
+          'orderHistory': newUser.orderHistory,
+          'wishList': newUser.wishList,
+        });
+
+      if (mounted) {
         Navigator.pushNamed(context, '/home');
-      }
-      else{
+      } else {
         print('Widget is no longer mounted');
       }
     }
+  } catch (e) {
+    setState(() => errorMessage = 'Error creating account: $e');
+  }
+    
   }
 
   bool confirmEmails(String email, String confirmEmail){

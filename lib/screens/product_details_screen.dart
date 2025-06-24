@@ -9,7 +9,7 @@ class ProductDetailsScreen extends StatelessWidget {
   final String description;
   final String imageUrl;
  
-  ProductDetailsScreen({
+  const ProductDetailsScreen({
     super.key, 
     required this.name,
     required this.price,

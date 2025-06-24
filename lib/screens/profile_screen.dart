@@ -33,7 +33,9 @@ class ProfileScreen extends StatelessWidget {
               child: ListTile(
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 title: const Text('Edit Profile'),
-                onTap: () {},
+                onTap: () {
+                  
+                },
               ),
             ),
           ),

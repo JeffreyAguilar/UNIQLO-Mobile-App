@@ -1,5 +1,6 @@
 import 'package:e_comm_app/firebase_options.dart';
 import 'package:e_comm_app/screens/account.dart';
+import 'package:e_comm_app/screens/edit_profile.dart';
 import 'package:e_comm_app/screens/home.dart';
 import 'package:e_comm_app/screens/product_listing.dart';
 import 'package:e_comm_app/screens/shopping_cart.dart';
