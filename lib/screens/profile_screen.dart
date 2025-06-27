@@ -34,7 +34,7 @@ class ProfileScreen extends StatelessWidget {
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 title: const Text('Edit Profile'),
                 onTap: () {
-                  
+                  Navigator.pushNamed(context, '/editprofile');
                 },
               ),
             ),

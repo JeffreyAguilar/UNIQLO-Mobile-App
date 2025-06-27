@@ -1,6 +1,5 @@
 import 'package:e_comm_app/screens/shopping_cart.dart';
 import 'package:flutter/material.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
 

@@ -5,6 +5,7 @@ import 'package:e_comm_app/screens/home.dart';
 import 'package:e_comm_app/screens/product_listing.dart';
 import 'package:e_comm_app/screens/shopping_cart.dart';
 import 'package:e_comm_app/widgets/cart_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -19,17 +20,52 @@ void main() async{
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  Future<String?> _getCurrentUserId() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      return user?.uid; // Fetch the current user's UID
+    } catch (e) {
+      print('Error fetching user ID: $e');
+      return null;
+    }
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const MyHomePage(),
-      routes: {
-        '/cart': (context) => const ShoppingCart(),
-        '/home': (context) => const MyHomePage(),
-        '/productlist': (context) => const ProductListingPage(),
-        '/account': (context) => const AccountPage(),
+    return FutureBuilder<String?>(
+      future: _getCurrentUserId(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            ),
+          );
+        }
+
+        if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
+          return const MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: Scaffold(
+              body: Center(child: Text('Error fetching user ID')),
+            ),
+          );
+        }
+        final userId = snapshot.data!;
+
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: const MyHomePage(),
+          routes: {
+            '/cart': (context) => const ShoppingCart(),
+            '/home': (context) => const MyHomePage(),
+            '/productlist': (context) => const ProductListingPage(),
+            '/account': (context) => const AccountPage(),
+            '/editprofile': (context) => EditProfileScreen(userId: userId), // Pass the actual userId
+          },
+        );
       },
     );
   }

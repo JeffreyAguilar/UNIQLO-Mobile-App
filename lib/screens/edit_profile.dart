@@ -2,16 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_comm_app/models/user.dart';
 import 'package:flutter/material.dart';
 
-class EditProfileScreenState extends StatefulWidget {
+class EditProfileScreen extends StatefulWidget {
 
   final String userId;
-  const EditProfileScreenState({super.key, required this.userId});
+  const EditProfileScreen({super.key, required this.userId});
 
   @override
-  State<EditProfileScreenState> createState() => __EditProfileScreenStateState();
+  State<EditProfileScreen> createState() => __EditProfileScreenStateState();
 }
 
-class __EditProfileScreenStateState extends State<EditProfileScreenState> {
+class __EditProfileScreenStateState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -36,9 +36,9 @@ class __EditProfileScreenStateState extends State<EditProfileScreenState> {
         _nameController.text = user.name;
         _emailController.text = user.email;
         _phoneController.text = user.phone.toString();
-        _streetController.text = user.address['street'] ?? '';
+        _streetController.text = user.address['streetAddress'] ?? '';
         _cityController.text = user.address['city'] ?? '';
-        _zipController.text = user.address['zip'] ?? '';
+        _zipController.text = user.address['zipCode'] ?? '';
         _stateController.text = user.address['state'] ?? '';
         _countryController.text = user.address['country'] ?? '';
       });
@@ -87,7 +87,7 @@ class __EditProfileScreenStateState extends State<EditProfileScreenState> {
                 decoration: const InputDecoration(labelText: 'Name'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
+                    return 'Please enter your name.';
                   }
                   return null;
                 },
@@ -98,7 +98,7 @@ class __EditProfileScreenStateState extends State<EditProfileScreenState> {
                 decoration: const InputDecoration(labelText: 'Email'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
+                    return 'Please enter your email.';
                   }
                   return null;
                 },
@@ -110,10 +110,10 @@ class __EditProfileScreenStateState extends State<EditProfileScreenState> {
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your phone number';
+                    return 'Please enter your phone number.';
                   }
                   if (int.tryParse(value) == null) {
-                    return 'Please enter a valid phone number';
+                    return 'Please enter a valid phone number.';
                   }
                   return null;
                 },
@@ -124,7 +124,7 @@ class __EditProfileScreenStateState extends State<EditProfileScreenState> {
                 decoration: const InputDecoration(labelText: 'Street'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your street';
+                    return 'Please enter your street.';
                   }
                   return null;
                 },
@@ -135,7 +135,7 @@ class __EditProfileScreenStateState extends State<EditProfileScreenState> {
                 decoration: const InputDecoration(labelText: 'City'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your city';
+                    return 'Please enter your city.';
                   }
                   return null;
                 },
@@ -146,7 +146,29 @@ class __EditProfileScreenStateState extends State<EditProfileScreenState> {
                 decoration: const InputDecoration(labelText: 'ZIP Code'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your ZIP code';
+                    return 'Please enter your ZIP code.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _stateController,
+                decoration: const InputDecoration(labelText: 'State'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your state.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _countryController,
+                decoration: const InputDecoration(labelText: 'Country'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your country.';
                   }
                   return null;
                 },
